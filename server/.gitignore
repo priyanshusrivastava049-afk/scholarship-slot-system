@@ -1,0 +1,19 @@
+
+# Dependencies
+node_modules/
+
+# Environment secrets
+.env
+.env.*
+
+# Allow example environment configuration
+!.env.example
+
+# Generated Prisma client and build files
+server/generated/
+client/dist/
+server/dist/
+
+# Logs
+*.log
+npm-debug.log*
