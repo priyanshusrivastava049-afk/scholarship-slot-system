@@ -14,4 +14,68 @@ model Student {
   fullName    String
   email       String?  @unique
   createdAt   DateTime @default(now())
+  bookings Booking[]
+}
+
+
+enum BookingStatus {
+  CONFIRMED
+  CANCELLED
+  COMPLETED
+}
+
+model Venue {
+  id        Int      @id @default(autoincrement())
+  name      String
+  building  String
+  capacity  Int
+  createdAt DateTime @default(now())
+
+  slots     Slot[]
+}
+
+model Faculty {
+  id        Int      @id @default(autoincrement())
+  fullName  String
+  email     String?  @unique
+  createdAt DateTime @default(now())
+
+  slots     Slot[]
+}
+
+model Slot {
+  id        Int      @id @default(autoincrement())
+  startAt   DateTime
+  endAt     DateTime
+  capacity  Int
+  isOpen    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  venueId   Int
+  facultyId Int
+
+  venue     Venue    @relation(fields: [venueId], references: [id], onDelete: Restrict)
+  faculty   Faculty  @relation(fields: [facultyId], references: [id], onDelete: Restrict)
+  bookings  Booking[]
+
+  @@index([startAt, isOpen])
+  @@index([venueId, startAt, endAt])
+  @@index([facultyId, startAt, endAt])
+}
+
+model Booking {
+  id          Int           @id @default(autoincrement())
+  bookingCode String        @unique @default(cuid())
+  status      BookingStatus @default(CONFIRMED)
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  studentId   Int
+  slotId      Int
+
+  student     Student       @relation(fields: [studentId], references: [id], onDelete: Restrict)
+  slot        Slot          @relation(fields: [slotId], references: [id], onDelete: Restrict)
+
+  @@unique([studentId, slotId])
+  @@index([slotId, status])
 }
