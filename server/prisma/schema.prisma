@@ -79,3 +79,13 @@ model Booking {
   @@unique([studentId, slotId])
   @@index([slotId, status])
 }
+
+model Admin {
+  id           Int      @id @default(autoincrement())
+  fullName     String
+  email        String   @unique
+  passwordHash String
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
